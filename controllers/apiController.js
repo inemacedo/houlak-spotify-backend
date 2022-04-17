@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { Request } = require("../models");
 
 async function getToken() {
   const clientId = process.env.SPOTIFY_CLIENT_ID;
@@ -48,6 +49,10 @@ const getAlbums = async (req, res) => {
   try {
     const token = await getToken();
     const artistId = await getArtistId(token, req.query.artistName);
+    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+
+    await Request.create({ ip, artistSearched: req.query.artistName });
+
     const response = await axios.get(`https://api.spotify.com/v1/artists/${artistId}/albums`, {
       headers: {
         Authorization: "Bearer " + token,
