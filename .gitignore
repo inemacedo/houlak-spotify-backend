@@ -3,7 +3,7 @@
 # https://github.com/github/gitignore.
 # ----------------------------------------------------------------------------
 
-# Logs
+# RqquestLogs
 logs
 _.log
 npm-debug.log_

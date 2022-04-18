@@ -11,16 +11,16 @@ const sequelize = new Sequelize(
   },
 );
 
-const Request = require("./Request")(sequelize, Model, DataTypes);
+const RequestLog = require("./RequestLog")(sequelize, Model, DataTypes);
 
 // Luego de definir los modelos, se pueden establecer relaciones
 // entre los mismos...
-// Request.hasMany(Order);
-// Order.belongsTo(Request);
+// RequestLog.hasMany(Order);
+// Order.belongsTo(RequestLog);
 // Product.belongsTo(Category);
 // Category.hasMany(Product);
 
 module.exports = {
   sequelize,
-  Request,
+  RequestLog,
 };

@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { Request } = require("../models");
+const { RequestLog } = require("../models");
 
 async function getToken() {
   const clientId = process.env.SPOTIFY_CLIENT_ID;
@@ -51,7 +51,7 @@ const getAlbums = async (req, res) => {
     const artistId = await getArtistId(token, req.query.artistName);
     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
-    await Request.create({ ip, artistSearched: req.query.artistName });
+    await RequestLog.create({ ip, artistSearched: req.query.artistName });
 
     const response = await axios.get(`https://api.spotify.com/v1/artists/${artistId}/albums`, {
       headers: {
@@ -68,6 +68,17 @@ const getAlbums = async (req, res) => {
   }
 };
 
+async function getRequestLogs(req, res) {
+  try {
+    const logs = await RequestLog.findAll();
+    return res.json(logs);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ status: 500, msg: "Server error" });
+  }
+}
+
 module.exports = {
   getAlbums,
+  getRequestLogs,
 };

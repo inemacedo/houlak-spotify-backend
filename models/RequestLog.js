@@ -1,7 +1,7 @@
 module.exports = (sequelize, Model, DataTypes) => {
-  class Request extends Model {}
+  class RequestLog extends Model {}
 
-  Request.init(
+  RequestLog.init(
     {
       ip: {
         type: DataTypes.STRING,
@@ -13,9 +13,9 @@ module.exports = (sequelize, Model, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "request",
+      modelName: "requestLog",
     },
   );
 
-  return Request;
+  return RequestLog;
 };
