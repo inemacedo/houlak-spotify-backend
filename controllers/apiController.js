@@ -1,4 +1,5 @@
 const axios = require("axios");
+const _ = require("lodash");
 const { RequestLog } = require("../models");
 
 async function getToken() {
@@ -53,7 +54,21 @@ const getAlbums = async (req, res) => {
 
     await RequestLog.create({ ip, artistSearched: req.query.artistName });
 
-    const response = await axios.get(`https://api.spotify.com/v1/artists/${artistId}/albums`, {
+    const artistAlbumsResponse = await axios.get(
+      `https://api.spotify.com/v1/artists/${artistId}/albums`,
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      },
+    );
+
+    const albumIds = artistAlbumsResponse.data.items.map((album) => album.id);
+
+    const response = await axios.get(`https://api.spotify.com/v1/albums`, {
+      params: { ids: albumIds.join(",") },
       headers: {
         Authorization: "Bearer " + token,
         "Content-Type": "application/json",
@@ -61,7 +76,7 @@ const getAlbums = async (req, res) => {
       },
     });
 
-    return res.json({ albums: response.data.items });
+    return res.json({ albums: _.orderBy(response.data.albums, ["popularity"], ["desc"]) });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ status: 500, msg: "Server error" });
